@@ -17,7 +17,8 @@ from CNN import SpectrogramCNN
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.model = torch.load("mejor_modelo_eer_LA_ES_REG_AUG_ANALISIS.pth", map_location="cpu")
+    app.state.model = SpectrogramCNN()
+    app.state.model.load_state_dict = torch.load("mejor_modelo_eer_LA_ES_REG_AUG_ANALISIS.pth", map_location="cpu")
     app.state.model.eval()
     yield
     
