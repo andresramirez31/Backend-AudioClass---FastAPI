@@ -97,3 +97,10 @@ async def predict(audio: UploadFile = File(...)):
 async def ping():
     print("Ping received")
     return {"message": "pong"}
+
+@app.post("/test-upload")
+async def test_upload(audio: UploadFile = File(...)):
+    print("Received request in /test-upload", flush=True)
+    content = await audio.read()
+    print("File size:", len(content), flush=True)
+    return {"size": len(content)}
