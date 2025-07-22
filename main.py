@@ -73,7 +73,7 @@ async def predict(audio: UploadFile = File(...)):
         mel_db = preprocess_audio_to_mel(temp_file_path)  # shape: (1, n_mels, time)
         print("mel_db shape after preprocessing:", mel_db.shape)
         # Add batch dimension for CNN: (batch, channel, n_mels, time)
-        input_tensor = mel_db.unsqueeze(1)  # shape: (1, 1, n_mels, time)
+        input_tensor = mel_db  # shape: (1, 1, n_mels, time)
         print("input_tensor shape for model:", input_tensor.shape)
         
         with torch.no_grad():
