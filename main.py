@@ -17,11 +17,11 @@ from CNN import SpectrogramCNN
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.model = torch.load("model/your_model.pth", map_location="cpu")
+    app.state.model = torch.load("mejor_modelo_eer_LA_ES_REG_AUG_ANALISIS.pth", map_location="cpu")
     app.state.model.eval()
     yield
     
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
