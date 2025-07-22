@@ -62,23 +62,27 @@ def preprocess_audio_to_mel(audio_path, sample_rate=16000, duration=5, n_mels=65
 
 @app.post("/predict")
 async def predict(audio: UploadFile = File(...)):
+    print("Received request in /predict")
     with tempfile.NamedTemporaryFile(delete=False, suffix=".flac") as temp_file:
         temp_file.write(await audio.read())
         temp_file_path = temp_file.name
 
     
     mel_db = preprocess_audio_to_mel(temp_file_path)  # shape: (1, n_mels, time)
+    print("mel_db shape after preprocessing:", mel_db.shape)
     # Add batch dimension for CNN: (batch, channel, n_mels, time)
     input_tensor = mel_db  # shape: (1, 1, n_mels, time)
-
+    print("input_tensor shape for model:", input_tensor.shape)
+    
     with torch.no_grad():
         output = app.state.model(input_tensor).squeeze()
-
+    print("Model output:", output) 
+    
     if output < -1.71:
         result = "Artificial"
     else:
         result = "Natural"
     
-
+    print("Prediction result:", result)
     return {"prediction": result}
 
