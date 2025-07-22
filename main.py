@@ -28,7 +28,7 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173",
-                   "https://audioclassfrontendpi2-obmi4yxyr-andres-projects-7bc4cdee.vercel.app"],
+                   "https://audioclassfrontendpi2-1dy8jf8cl-andres-projects-7bc4cdee.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
