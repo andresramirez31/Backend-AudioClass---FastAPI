@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -13,6 +14,13 @@ import numpy as np
 import torchaudio
 from CNN import SpectrogramCNN  
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.model = torch.load("model/your_model.pth", map_location="cpu")
+    app.state.model.eval()
+    yield
+    
 app = FastAPI()
 
 app.add_middleware(
@@ -22,10 +30,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-model = SpectrogramCNN()
-model.load_state_dict(torch.load("mejor_modelo_eer_LA_ES_REG_AUG_ANALISIS.pth", map_location=torch.device('cpu')))
-model.eval() # Load your pre-trained model here
 
 
 def preprocess_audio_to_mel(audio_path, sample_rate=16000, duration=5, n_mels=65, n_fft=512, hop_length=200):
@@ -67,7 +71,7 @@ async def predict(audio: UploadFile = File(...)):
     input_tensor = mel_db  # shape: (1, 1, n_mels, time)
 
     with torch.no_grad():
-        output = model(input_tensor).squeeze()
+        output = app.state.model(input_tensor).squeeze()
 
     if output < -1.71:
         result = "Artificial"
