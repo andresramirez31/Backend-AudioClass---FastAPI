@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+librosa
+soundfile
+joblib
+torch
+torchaudio
+numpy
+matplotlib
+pandas
+scikit-learn
+jinja2
